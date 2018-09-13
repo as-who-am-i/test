@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+
+编写mybatis配置文件的细节：
+
+    1、在进行多表查询时mapper的命名空间中，
+       值得注意的是A表关联的B表，查询的是A表的详细信息，
+       所以命名空间要写A的dao接口
+
+    2、联表进行查询，编写sql语句时要进行重名，命名规则是“表命_列名”，
+       结果集(resultMap)填写要用查询详细信息的表的pojo
+
+    3、在编写多表的resultMap设置中注意id和type的设置，编写什么表，对应什么值。
+       再进行主表的 association来关联附表信息(property、resulMap)
+
+-->
+<mapper namespace="com.zhiyou100.student.StudentDao">
+
+    <resultMap id="grade" type="com.zhiyou100.student.Grade" autoMapping="true">
+        <id property="id" column="id"></id>
+        <result property="name" column="name"></result>
+    </resultMap>
+
+
+    <resultMap id="student" type="com.zhiyou100.student.Student" autoMapping="true">
+        <id property="id" column="student_id"></id>
+        <result property="name" column="student_name"></result>
+        <!--association表示关联，对应的就是数据库的外键字段-->
+        <association property="grade" resultMap="grade" columnPrefix="grade_"></association>
+    </resultMap>
+
+    <select id="findById" resultMap="student">
+       select
+       l.id student_id,l.name student_name,
+       r.id grade_id,r.name grade_name
+       from
+       t_student l,t_grade r
+       where
+       l.cid=r.id and l.id=#{id}
+   </select>
+
+
+
+
+
+
+</mapper>
