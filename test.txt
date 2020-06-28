@@ -1,0 +1,13 @@
+Map<String, Transport> oldTransportsMap = oldTransports.stream().filter(Objects::nonNull).collect(Collectors.toMap(Transport::getTaskNo, a -> a, (k1, k2) -> k1));
+        logger.info("oldTransportsMap:{}", JSON.toJSONString(oldTransportsMap.size()));
+
+        Map<String, Transport> newTransportsMap = transportList.stream().filter(Objects::nonNull).collect(Collectors.toMap(Transport::getTaskNo, a -> a, (k1, k2) -> k1));
+        logger.info("newTransportsMap:{}", JSON.toJSONString(newTransportsMap.size()));
+
+        //需要删除的集合
+        Map<String, Transport> removeTransportMap = Maps.difference(newTransportsMap, oldTransportsMap).entriesOnlyOnRight();
+        logger.info("removeTransportMap:{}", JSON.toJSONString(removeTransportMap.size()));
+
+        //需要保存的集合
+        Map<String, Transport> saveTransportMap = Maps.difference(newTransportsMap, oldTransportsMap).entriesOnlyOnLeft();
+        logger.info("saveTransportMap:{}", JSON.toJSONString(saveTransportMap.size()));
